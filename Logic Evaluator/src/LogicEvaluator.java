@@ -68,6 +68,11 @@ public class LogicEvaluator extends javax.swing.JFrame {
         inputLabel.setText("Input:");
 
         exampleButton.setText("Ejemplo");
+        exampleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exampleButtonActionPerformed(evt);
+            }
+        });
 
         evaluarButton.setText("Evaular");
         evaluarButton.addActionListener(new java.awt.event.ActionListener() {
@@ -139,15 +144,44 @@ public class LogicEvaluator extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-        System.exit(0);  
+        System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void evaluarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evaluarButtonActionPerformed
-        
-        
-        
-        
+
+        String expresion = inputField.getText();
+        if (expresion == null || expresion.trim().isEmpty()) {
+            resultadosPane.setText("Escribe una expresión, por ejemplo: q ∧ (¬p ∨ ¬r)");
+            return;
+        }
+        try {
+            // detectamos
+            java.util.List<String> variables = LogicOperations.obtenerVariables(expresion);
+            java.util.Map<String, Boolean> asignacion = LogicOperations.buscarAsignacionSatisfactoria(expresion);
+
+            StringBuilder construccion = new StringBuilder();
+            construccion.append("Expresión: ").append(expresion).append("\n\n\n");
+
+            if (asignacion != null) {
+                construccion.append("Es VERDADERA con:\n  ");
+                construccion.append(LogicOperations.formatearAsignacion(asignacion));
+            } else {
+                construccion.append("No existe asignación que la haga verdadera (insatisfacible).");
+            }
+            
+            resultadosPane.setText(construccion.toString());
+            
+        } catch (Exception ex) {
+            resultadosPane.setText("Error: " + ex.getMessage());
+        }
+
+
     }//GEN-LAST:event_evaluarButtonActionPerformed
+
+    private void exampleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exampleButtonActionPerformed
+        // Escribir el ejemplo en el textfield
+        inputField.setText("q ∧ (¬p ∨ ¬r)"); // Ejemplo del ejercicio 3
+    }//GEN-LAST:event_exampleButtonActionPerformed
 
     /**
      * @param args the command line arguments
